@@ -148,7 +148,8 @@ graph TD
 | **FastMCP** | 0.3+ | Servidor MCP |
 | **SQLite** | 3.x | Base de datos local |
 | **Pandas** | 2.0+ | Procesamiento de datos |
-
+| **Pytest** | 8.0+ | Pruebas unitarias |
+| **Pytest-Asyncio** | 0.23+ | Pruebas asíncronas |
 
 ## 🔧 Herramientas MCP
 
@@ -344,27 +345,139 @@ ngrok http 8000
 
 ```text
 
-mi_agente_mcp_groq/
-├── app_streamlit.py          # Interfaz web
-├── agent_core.py             # Lógica del agente (Groq, MCP, memoria)
-├── mcp_server.py             # Servidor MCP con herramientas
-├── load_data.py              # Script para cargar datos
-├── requirements.txt          # Dependencias
-├── README.md                 # Este archivo
-├── .gitignore               # Archivos a ignorar
-├── .env.example             # Ejemplo de variables de entorno
-├── data/                    # Datos
-│   ├── clientes.csv
-│   ├── ventas.csv
-│   ├── productos.csv
-│   ├── categorias.csv
-│   └── metodos_pago.csv
-├── tests/                   # Pruebas
-│   ├── test_tools.py
-│   └── test_agent.py
+agente_mcp_groq/
+├── app_streamlit.py # Interfaz web
+├── agent_core.py # Lógica del agente (Groq, MCP, memoria)
+├── mcp_server.py # Servidor MCP con 8 herramientas
+├── load_data.py # Script para cargar datos
+├── check_db.py # Verificación de base de datos
+├── test_connection.py # Prueba de conexión MCP
+├── requirements.txt # Dependencias
+├── README.md # Documentación
+├── .gitignore # Archivos a ignorar
+├── .env.example # Ejemplo de variables de entorno
+├── data/ # Datos
+│ ├── clientes.csv
+│ ├── ventas.csv
+│ ├── productos.csv
+│ ├── categorias.csv
+│ └── metodos_pago.csv
+├── tests/ # Pruebas unitarias
+│ ├── init.py
+│ ├── test_tools.py # 8 pruebas de herramientas MCP
+│ ├── test_agent.py # 5 pruebas del agente
+│ └── test_connection.py # 1 prueba de conexión
 └── .streamlit/
-    └── secrets.toml.example # Ejemplo de secretos
+└── secrets.toml.example # Ejemplo de secretos
 ```
+
+* * *
+
+## 🧪 Pruebas
+
+El proyecto incluye pruebas unitarias para todas las herramientas MCP y el agente completo.
+
+### 📊 Cobertura de Pruebas
+
+| Componente | Pruebas | Estado |
+|------------|---------|--------|
+| **Tools MCP** | 9 pruebas | ✅ Todas pasan |
+| **Agente LangChain** | 5 pruebas | ✅ Todas pasan |
+| **Conexión MCP** | 1 prueba | ✅ Todas pasan |
+| **Total** | **15 pruebas** | ✅ **100% pasan** |
+
+### 🔧 Pruebas de Herramientas MCP
+
+| Prueba | Descripción | Estado |
+|--------|-------------|--------|
+| `test_buscar_clientes` | Búsqueda por región, nombre y validación de tipos | ✅ |
+| `test_perfil_consumo_cliente` | Perfil de cliente existente e inexistente | ✅ |
+| `test_clientes_alto_valor` | Filtrado por gasto mínimo y límite | ✅ |
+| `test_top_productos_vendidos` | Orden por cantidad e ingresos | ✅ |
+| `test_analisis_categoria` | Todas las categorías y específica | ✅ |
+| `test_ventas_por_region` | Todas las regiones y específica | ✅ |
+| `test_preferencia_metodo_pago` | Todos los métodos y por región | ✅ |
+| `test_calcular_nivel_cliente` | Clasificación VIP, Premium, Regular | ✅ |
+| `test_mcp` | Conexión al MCP Server | ✅ |
+
+### 🧠 Pruebas del Agente
+
+| Prueba | Descripción | Estado |
+|--------|-------------|--------|
+| `test_system_prompt` | Verifica que el prompt está definido | ✅ |
+| `test_agent_creation` | Creación del agente LangChain | ✅ |
+| `test_simple_query` | Consulta simple sin tools | ✅ |
+| `test_tool_query` | Consulta que usa herramientas MCP | ✅ |
+| `test_memory` | Memoria entre turnos de conversación | ✅ |
+| `test_error_handling` | Manejo de errores y casos extremos | ✅ |
+
+### 🚀 Ejecutar Pruebas
+
+#### 1. Instalar dependencias de pruebas
+```bash
+pip install pytest pytest-cov pytest-asyncio
+```
+
+#### 2. Asegurar que el MCP Server está corriendo
+
+```bash
+# En una terminal separada
+python mcp_server.py
+```
+
+#### 3. Ejecutar todas las pruebas
+```bash
+python -m pytest tests/ -v --asyncio-mode=auto
+```
+
+#### 4. Ejecutar pruebas con cobertura
+```bash
+python -m pytest tests/ -v --cov=. --cov-report=html --asyncio-mode=auto
+# Abrir htmlcov/index.html en el navegador
+```
+
+#### 5. Ejecutar pruebas específicas
+```bash
+# Solo herramientas MCP
+python -m pytest tests/test_tools.py -v
+# Solo agente
+python -m pytest tests/test_agent.py -v --asyncio-mode=auto
+# Solo conexión
+python -m pytest tests/test_connection.py -v --asyncio-mode=auto
+```
+
+### 📊 Resultado Esperado
+```text
+
+============================================= test session starts =============================================
+collected 15 items
+tests/test_agent.py::test_system_prompt PASSED                                                           [  6%]
+tests/test_agent.py::test_agent_creation PASSED                                                          [ 13%]
+tests/test_agent.py::test_simple_query PASSED                                                            [ 20%]
+tests/test_agent.py::test_tool_query PASSED                                                              [ 26%]
+tests/test_agent.py::test_memory PASSED                                                                  [ 33%]
+tests/test_agent.py::test_error_handling PASSED                                                          [ 40%]
+tests/test_connection.py::test_mcp PASSED                                                                [ 46%]
+tests/test_tools.py::test_buscar_clientes PASSED                                                         [ 53%]
+tests/test_tools.py::test_perfil_consumo_cliente PASSED                                                  [ 60%]
+tests/test_tools.py::test_clientes_alto_valor PASSED                                                     [ 66%]
+tests/test_tools.py::test_top_productos_vendidos PASSED                                                  [ 73%]
+tests/test_tools.py::test_analisis_categoria PASSED                                                      [ 80%]
+tests/test_tools.py::test_ventas_por_region PASSED                                                       [ 86%]
+tests/test_tools.py::test_preferencia_metodo_pago PASSED                                                 [ 93%]
+tests/test_tools.py::test_calcular_nivel_cliente PASSED                                                  [100%]
+=========================================== 15 passed in 3.42s ===========================================
+```
+
+### 🐛 Solución de Problemas en Pruebas
+
+| Error | Solución |
+| --- | --- |
+| `ModuleNotFoundError: No module named 'langchain'` | Activar entorno virtual: `.venvScriptsactivate` |
+| `async def functions are not natively supported` | Instalar: `pip install pytest-asyncio` |
+| `MCP Server no detectado` | Ejecutar `python mcp_server.py` en otra terminal |
+| `Error de conexión` | Verificar URL en `.env`: `MCP_SERVER_URL=http://127.0.0.1:8000/mcp` |
+
 
 * * *
 
