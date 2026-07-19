@@ -239,16 +239,17 @@ MCP_SERVER_URL = "https://tu-mcp-server.onrender.com/mcp"
 
 1. **Clonar el repositorio**
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# .venv\Scripts\activate   # Windows
-```
-
-2. **Clonar el repositorio**
-```bash
 git clone https://github.com/systemyuri/agente-mcp-groq.git
 cd agente-mcp-groq
 ```
+
+2. **Crear y activar entorno virtual**
+```bash
+python -m venv .venv
+#source .venv/bin/activate  # Linux/Mac
+.venv\Scripts\activate   # Windows
+```
+
 
 3. **Instalar dependencias**
 ```bash
@@ -519,20 +520,15 @@ agente_mcp_groq/
 ### Producción y Repositorio
 
 -   **App en Producción:** [https://tu-app.streamlit.app](https://tu-app.streamlit.app)
-    
 -   **Repositorio GitHub:** [https://github.com/systemyuri/agente-mcp-groq](https://github.com/systemyuri/agente-mcp-groq)
     
 
 ### Documentación Oficial
 
 -   **Model Context Protocol:** [https://modelcontextprotocol.io](https://modelcontextprotocol.io)
-    
 -   **LangChain Documentation:** [https://docs.langchain.com](https://docs.langchain.com)
-    
 -   **Streamlit Docs:** [https://docs.streamlit.io](https://docs.streamlit.io)
-    
 -   **Groq Console:** [https://console.groq.com](https://console.groq.com)
-    
 -   **FastMCP:** [https://github.com/jlowin/fastmcp](https://github.com/jlowin/fastmcp)
     
 
