@@ -27,11 +27,6 @@ wheels/
 .env
 .streamlit/secrets.toml
 
-# Bases de datos
-*.db
-*.sqlite
-*.sqlite3
-
 # Archivos de sistema
 .DS_Store
 Thumbs.db

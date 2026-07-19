@@ -12,6 +12,12 @@ from fastmcp import FastMCP
 # Configuración desde variables de entorno
 DB_PATH = Path(os.environ.get("MCP_DB_PATH", "./data/mcp_laboratorio.db"))
 
+# Verificar que la base de datos existe
+if not DB_PATH.exists():
+    print(f"⚠️ Base de datos no encontrada en: {DB_PATH}")
+    print("   Ejecuta: python load_data.py o python create_db_direct.py")
+    print("   Continuando con la ruta especificada...")
+
 # Instancia del servidor MCP
 mcp = FastMCP(
     name="Asistente Comercial E-commerce",
@@ -35,18 +41,58 @@ def ejecutar_sql(sql: str, parametros: tuple = ()) -> list[dict]:
         except sqlite3.Error as e:
             return [{"error": f"Error en la consulta: {str(e)}"}]
 
-# -----------------------------------------------------------------------------
-# FUNCIÓN HELPER PARA CONVERTIR PARÁMETROS
-# -----------------------------------------------------------------------------
+
+# =============================================================================
+# FUNCIÓN HELPER MEJORADA PARA CONVERTIR PARÁMETROS
+# =============================================================================
 def asegurar_int(valor, default=10, minimo=1, maximo=20):
-    """Convierte un valor a entero con límites."""
+    """
+    Convierte un valor a entero con límites.
+    Maneja strings, floats, None y otros tipos.
+    """
+    # Si es None, usar default
+    if valor is None:
+        return default
+    
+    # Si es string, intentar convertir
     if isinstance(valor, str):
+        # Eliminar espacios y comillas
+        valor_limpio = valor.strip().strip('"').strip("'")
         try:
-            valor = int(valor)
-        except ValueError:
-            valor = default
+            valor = int(float(valor_limpio))  # float() maneja "1.0" y similares
+        except (ValueError, TypeError):
+            return default
+    
+    # Si es float, convertir a int
+    if isinstance(valor, float):
+        valor = int(valor)
+    
+    # Si no es entero, usar default
     if not isinstance(valor, int):
-        valor = default
+        return default
+    
+    # Aplicar límites
+    return max(minimo, min(valor, maximo))
+
+def asegurar_float(valor, default=500.0, minimo=0, maximo=1000000):
+    """
+    Convierte un valor a float con límites.
+    Maneja strings, ints, None y otros tipos.
+    """
+    if valor is None:
+        return default
+    
+    if isinstance(valor, str):
+        valor_limpio = valor.strip().strip('"').strip("'")
+        try:
+            valor = float(valor_limpio)
+        except (ValueError, TypeError):
+            return default
+    
+    if not isinstance(valor, (int, float)):
+        return default
+    
+    valor = float(valor)
     return max(minimo, min(valor, maximo))
 
 # =============================================================================
@@ -57,15 +103,16 @@ def buscar_clientes(texto_busqueda: str, limite: int = 10) -> str:
     """
     Busca clientes por nombre, apellido o región.
     
-    Preguntas que resuelve:
-    - "Busca clientes que se llamen Juan"
-    - "Encuentra clientes de Patagonia"
-    
     Args:
         texto_busqueda: Texto para buscar en nombre, apellido o región
         limite: Máximo de resultados (1-25)
     """
+    # 🔥 FORZAR TIPO
     limite = asegurar_int(limite, default=10, minimo=1, maximo=25)
+    
+    if not isinstance(texto_busqueda, str):
+        texto_busqueda = str(texto_busqueda)
+    
     patron = f"%{texto_busqueda.strip()}%"
     
     sql = """
@@ -92,12 +139,19 @@ def perfil_consumo_cliente(cliente_id: int) -> str:
     Args:
         cliente_id: ID del cliente (entero)
     """
-    # Asegurar que cliente_id es entero
-    if isinstance(cliente_id, str):
-        try:
+    # 🔥 FORZAR TIPO
+    try:
+        if isinstance(cliente_id, str):
+            cliente_id = int(float(cliente_id.strip()))
+        elif isinstance(cliente_id, float):
             cliente_id = int(cliente_id)
-        except ValueError:
-            return json.dumps({"error": "cliente_id debe ser un número entero"}, ensure_ascii=False)
+        elif not isinstance(cliente_id, int):
+            cliente_id = 0
+    except (ValueError, TypeError):
+        return json.dumps({"error": "cliente_id debe ser un número entero"}, ensure_ascii=False)
+    
+    if cliente_id <= 0:
+        return json.dumps({"error": "cliente_id debe ser un número positivo"}, ensure_ascii=False)
     
     sql = """
         SELECT
@@ -137,12 +191,8 @@ def clientes_alto_valor(gasto_minimo: float = 500, limite: int = 10) -> str:
         gasto_minimo: Monto mínimo de gasto para considerar
         limite: Máximo de resultados (1-50)
     """
-    if isinstance(gasto_minimo, str):
-        try:
-            gasto_minimo = float(gasto_minimo)
-        except ValueError:
-            gasto_minimo = 500.0
-    
+    # 🔥 FORZAR TIPOS
+    gasto_minimo = asegurar_float(gasto_minimo, default=500.0, minimo=0, maximo=1000000)
     limite = asegurar_int(limite, default=10, minimo=1, maximo=50)
     
     sql = """
@@ -177,9 +227,17 @@ def top_productos_vendidos(limite: int = 10, ordenar_por: str = "cantidad") -> s
         limite: Número de productos a mostrar (1-20)
         ordenar_por: "cantidad" o "ingresos"
     """
+    # 🔥 FORZAR TIPO: Asegurar que limite es entero
     limite = asegurar_int(limite, default=10, minimo=1, maximo=20)
     
-    if ordenar_por.lower() == "ingresos":
+    # Asegurar que ordenar_por es string válido
+    if not isinstance(ordenar_por, str):
+        ordenar_por = "cantidad"
+    ordenar_por = ordenar_por.lower().strip()
+    if ordenar_por not in ["cantidad", "ingresos"]:
+        ordenar_por = "cantidad"
+    
+    if ordenar_por == "ingresos":
         columna_orden = "Ingresos_Totales DESC"
     else:
         columna_orden = "Total_Vendido DESC"

@@ -1,8 +1,35 @@
 # 🛒 Asistente Comercial MCP
 
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red.svg)](https://streamlit.io/)
+[![LangChain](https://img.shields.io/badge/LangChain-0.3+-green.svg)](https://langchain.com/)
+[![Groq](https://img.shields.io/badge/Groq-llama--3.3--70b-orange.svg)](https://groq.com/)
+[![Tests](https://img.shields.io/badge/Tests-15%20passed-brightgreen.svg)](#-pruebas)
+
 Sistema de agente de IA para análisis comercial de un e-commerce de productos alimenticios.
 
-## 📋 Problema que resuelve
+---
+
+## 📑 Índice
+
+- [📋 Problema que Resuelve](#-problema-que-resuelve)
+- [🏗️ Arquitectura del Sistema](#️-arquitectura-del-sistema)
+- [🛠️ Tecnologías Utilizadas](#️-tecnologías-utilizadas)
+- [🔧 Herramientas MCP](#-herramientas-mcp)
+- [🧠 Memoria](#-memoria)
+- [🔐 Secretos y Configuración](#-secretos-y-configuración)
+- [🚀 Instalación Local](#-instalación-local)
+- [🧪 Pruebas](#-pruebas)
+- [🌐 Despliegue](#-despliegue)
+- [📁 Estructura del Proyecto](#-estructura-del-proyecto)
+- [🔗 Enlaces](#-enlaces)
+- [👥 Equipo](#-equipo)
+- [📄 Licencia](#-licencia)
+- [🙏 Agradecimientos](#-agradecimientos)
+
+---
+
+## 📋 Problema que Resuelve
 
 El asistente ayuda a equipos comerciales y de atención al cliente a obtener información rápida y verificable sobre:
 
@@ -10,6 +37,7 @@ El asistente ayuda a equipos comerciales y de atención al cliente a obtener inf
 - **Productos**: Productos más vendidos, análisis por categoría
 - **Ventas**: Análisis por región, métodos de pago
 - **Análisis**: Clasificación de clientes (VIP, Premium, Regular)
+
 **Usuario principal:** Equipo comercial y de atención al cliente de un e-commerce.
 
 **Necesidad:** Obtener información rápida y verificable sobre clientes, ventas, productos y regiones sin necesidad de consultar directamente bases de datos.
@@ -27,9 +55,12 @@ El asistente ayuda a equipos comerciales y de atención al cliente a obtener inf
 - ❌ Procesamiento de pagos
 - ❌ Gestión de inventario en tiempo real
 
+---
 
 ## 🏗️ Arquitectura del Sistema
-### Arquitectura de Componentes
+
+### Diagrama de Componentes
+
 ```text
 ┌───────────────────────────────────────────────────────────────┐
 │                   USUARIO                                     │
@@ -260,115 +291,9 @@ python mcp_server.py
    Endpoint MCP: http://127.0.0.1:8000/mcp
 ```
 
-7. **Ejecutar Streamlit (Terminal 2)*
+7. **Ejecutar Streamlit (Terminal 2)**
 ```bash
 streamlit run app_streamlit.py
-```
-
-
-## 🌐 Despliegue
-
-### En Streamlit Community Cloud
-
-1.  **Sube el código a GitHub**
-    
-
-```bash
-
-git add .
-git commit -m "feat: Asistente Comercial MCP con Groq"
-git push origin main
-```
-2.  **Ve a** [share.streamlit.io](https://share.streamlit.io)
-    
-3.  **Conecta tu repositorio**
-    
-    -   Selecciona GitHub
-        
-    -   Elige el repositorio y rama `main`
-        
-    -   Archivo principal: `app_streamlit.py`
-        
-4.  **Configura los Secretos**  
-    En la sección "Secrets", agrega:
-    
-    ```toml
-    
-    GROQ_API_KEY = "gsk_tu_api_key_aqui"
-    GROQ_MODEL = "llama-3.3-70b-versatile"
-    MCP_SERVER_URL = "https://tu-mcp-server.onrender.com/mcp"
-    ```
-
-5.  **Despliega**
-    
-    -   Haz clic en "Deploy"
-        
-    -   Espera ~5 minutos
-        
-    -   ¡Obtendrás tu URL pública!
-        
-
-### MCP Server Remoto
-
-**Opción 1: [Render.com](https://Render.com) (Recomendado)**
-
-Crea `render.yaml`:
-
-```yaml
-
-services:
-  - type: web
-    name: mcp-server
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: python mcp_server.py
-    envVars:
-      - key: GROQ_API_KEY
-        sync: false
-```
-
-**Opción 2: ngrok (Para pruebas rápidas)**
-
-```bash
-
-# Terminal 1
-python mcp_server.py
-# Terminal 2 (nueva terminal)
-ngrok http 8000
-# Copia la URL https://xxxx.ngrok.io
-# Actualiza MCP_SERVER_URL con esta URL + /mcp
-```
-
-* * *
-
-## 📁 Estructura del Proyecto
-
-```text
-
-agente_mcp_groq/
-├── app_streamlit.py # Interfaz web
-├── agent_core.py # Lógica del agente (Groq, MCP, memoria)
-├── mcp_server.py # Servidor MCP con 8 herramientas
-├── load_data.py # Script para cargar datos
-├── check_db.py # Verificación de base de datos
-├── test_connection.py # Prueba de conexión MCP
-├── requirements.txt # Dependencias
-├── README.md # Documentación
-├── .gitignore # Archivos a ignorar
-├── .env.example # Ejemplo de variables de entorno
-├── data/ # Datos
-│ ├── clientes.csv
-│ ├── ventas.csv
-│ ├── productos.csv
-│ ├── categorias.csv
-│ └── metodos_pago.csv
-├── tests/ # Pruebas unitarias
-│ ├── init.py
-│ ├── test_tools.py # 8 pruebas de herramientas MCP
-│ ├── test_agent.py # 5 pruebas del agente
-│ └── test_connection.py # 1 prueba de conexión
-└── .streamlit/
-└── secrets.toml.example # Ejemplo de secretos
 ```
 
 * * *
@@ -477,6 +402,114 @@ tests/test_tools.py::test_calcular_nivel_cliente PASSED                         
 | `async def functions are not natively supported` | Instalar: `pip install pytest-asyncio` |
 | `MCP Server no detectado` | Ejecutar `python mcp_server.py` en otra terminal |
 | `Error de conexión` | Verificar URL en `.env`: `MCP_SERVER_URL=http://127.0.0.1:8000/mcp` |
+
+
+
+
+## 🌐 Despliegue
+
+### En Streamlit Community Cloud
+
+1.  **Sube el código a GitHub**
+    
+
+```bash
+
+git add .
+git commit -m "feat: Asistente Comercial MCP con Groq"
+git push origin main
+```
+2.  **Ve a** [share.streamlit.io](https://share.streamlit.io)
+    
+3.  **Conecta tu repositorio**
+    
+    -   Selecciona GitHub
+        
+    -   Elige el repositorio y rama `main`
+        
+    -   Archivo principal: `app_streamlit.py`
+        
+4.  **Configura los Secretos**  
+    En la sección "Secrets", agrega:
+    
+    ```toml
+    
+    GROQ_API_KEY = "gsk_tu_api_key_aqui"
+    GROQ_MODEL = "llama-3.3-70b-versatile"
+    MCP_SERVER_URL = "https://tu-mcp-server.onrender.com/mcp"
+    ```
+
+5.  **Despliega**
+    
+    -   Haz clic en "Deploy"
+        
+    -   Espera ~5 minutos
+        
+    -   ¡Obtendrás tu URL pública!
+        
+
+### MCP Server Remoto
+
+**Opción 1: [Render.com](https://Render.com) (Recomendado)**
+
+Crea `render.yaml`:
+
+```yaml
+
+services:
+  - type: web
+    name: mcp-server
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python mcp_server.py
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+```
+
+**Opción 2: ngrok (Para pruebas rápidas)**
+
+```bash
+
+# Terminal 1
+python mcp_server.py
+# Terminal 2 (nueva terminal)
+ngrok http 8000
+# Copia la URL https://xxxx.ngrok.io
+# Actualiza MCP_SERVER_URL con esta URL + /mcp
+```
+
+* * *
+
+## 📁 Estructura del Proyecto
+
+```text
+
+agente_mcp_groq/
+├── app_streamlit.py            # Interfaz web
+├── agent_core.py               # Lógica del agente (Groq, MCP, memoria)
+├── mcp_server.py               # Servidor MCP con 8 herramientas
+├── load_data.py                # Script para cargar datos
+├── check_db.py                 # Verificación de base de datos
+├── test_connection.py          # Prueba de conexión MCP
+├── requirements.txt            # Dependencias
+├── README.md                   # Documentación
+├── .gitignore                  # Archivos a ignorar
+├── .env.example                # Ejemplo de variables de entorno
+├── data/ # Datos
+│ ├── clientes.csv
+│ ├── ventas.csv
+│ ├── productos.csv
+│ ├── categorias.csv
+│ └── metodos_pago.csv
+├── tests/ # Pruebas unitarias
+│ ├── __init__.py
+│ ├── test_tools.py             # 8 pruebas de herramientas MCP
+│ ├── test_agent.py             # 5 pruebas del agente
+│ └── test_connection.py        # 1 prueba de conexión
+└── .streamlit/
+└── secrets.toml.example        # Ejemplo de secretos
+```
 
 
 * * *
