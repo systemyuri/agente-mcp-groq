@@ -1,0 +1,16 @@
+# render.yaml
+services:
+  - type: web
+    name: mcp-server-agente
+    runtime: python
+    repo: https://github.com/systemyuri/agente-mcp-groq
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: python mcp_server.py
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false  # Lo configurarás manualmente en Render
+      - key: MCP_DB_PATH
+        value: ./data/mcp_laboratorio.db
+    healthCheckPath: /mcp
