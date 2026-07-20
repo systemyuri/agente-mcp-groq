@@ -172,7 +172,7 @@ graph TD
 
 | Tecnología | Versión | Propósito |
 |------------|---------|-----------|
-| **Python** | 3.10+ | Lenguaje base |
+| **Python** | 3.12.9+ | Lenguaje base |
 | **Streamlit** | 1.28+ | Interfaz web |
 | **LangChain** | 0.3+ | Orquestación del agente |
 | **Groq** | - | Modelo de lenguaje (llama-3.3-70b-versatile) |
@@ -231,7 +231,7 @@ MCP_SERVER_URL=http://127.0.0.1:8000/mcp
 En la interfaz de Streamlit Cloud, agrega estos secretos:
 ```toml
 GROQ_API_KEY = "gsk_tu_api_key_aqui"
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "llama-3.1-8b-instant"
 MCP_SERVER_URL = "https://tu-mcp-server.onrender.com/mcp"
 ```
 
@@ -519,7 +519,7 @@ agente_mcp_groq/
 
 ### Producción y Repositorio
 
--   **App en Producción:** [https://tu-app.streamlit.app](https://tu-app.streamlit.app)
+-   **App en Producción:** [https://systemyuri-agente-mcp-groq.streamlit.app/](https://systemyuri-agente-mcp-groq.streamlit.app/)
 -   **Repositorio GitHub:** [https://github.com/systemyuri/agente-mcp-groq](https://github.com/systemyuri/agente-mcp-groq)
     
 
