@@ -509,7 +509,7 @@ agente_mcp_groq/
 │ ├── test_agent.py             # 5 pruebas del agente
 │ └── test_connection.py        # 1 prueba de conexión
 └── .streamlit/
-└── secrets.toml.example        # Ejemplo de secretos
+  └── secrets.toml.example      # Ejemplo de secretos
 ```
 
 
