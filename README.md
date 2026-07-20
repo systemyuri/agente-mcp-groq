@@ -520,6 +520,7 @@ agente_mcp_groq/
 ### Producción y Repositorio
 
 -   **App en Producción:** [https://systemyuri-agente-mcp-groq.streamlit.app/](https://systemyuri-agente-mcp-groq.streamlit.app/)
+-   **MCP Server (Render):** [https://agente-mcp-groq.onrender.com/mcp](https://agente-mcp-groq.onrender.com/mcp)
 -   **Repositorio GitHub:** [https://github.com/systemyuri/agente-mcp-groq](https://github.com/systemyuri/agente-mcp-groq)
     
 
